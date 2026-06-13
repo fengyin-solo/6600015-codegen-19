@@ -61,6 +61,7 @@ defmodule Scheduler.TaskManager do
       max_retries: 3,
       logs: ["[INFO] Task #{name} queued"]
     }
+    Scheduler.CapacityPredictor.record_task_submission()
     {:reply, task, %{state | tasks: [task | state.tasks], counter: counter}}
   end
 

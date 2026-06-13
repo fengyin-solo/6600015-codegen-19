@@ -22,6 +22,8 @@ defmodule SchedulerWeb.Router do
     post "/tasks/:id/cancel", TaskController, :cancel
     get "/stats", TaskController, :stats
     get "/nodes", TaskController, :nodes
+    get "/capacity/prediction", CapacityController, :prediction
+    get "/capacity/scheduling-risk", CapacityController, :scheduling_risk
   end
 end
 
@@ -72,5 +74,19 @@ end
 defmodule SchedulerWeb.ErrorJSON do
   def render(template, _assigns) do
     %{errors: %{detail: Phoenix.Controller.status_message_from_template(template)}}
+  end
+end
+
+defmodule SchedulerWeb.CapacityController do
+  use Phoenix.Controller, formats: [:json]
+
+  def prediction(conn, _params) do
+    prediction = Scheduler.CapacityPredictor.get_prediction()
+    json(conn, prediction)
+  end
+
+  def scheduling_risk(conn, _params) do
+    risk = Scheduler.CapacityPredictor.get_scheduling_risk()
+    json(conn, %{scheduling_risks: risk})
   end
 end
